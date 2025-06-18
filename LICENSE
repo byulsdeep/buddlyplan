@@ -54,7 +54,7 @@ BuddyPlan is a personal SNS and scheduling app that combines social networking f
 ### Installation
 
 ```bash
-git clone https://github.com/byulsdeep/buddyplan.git
+git clone https://github.com/yourusername/buddyplan.git
 cd buddyplan
 docker-compose up --build
 ```
@@ -98,4 +98,4 @@ MIT © 2025 BuddyPlan
 
 ## Contact
 
-byulzdeep@gmail.com
+your.email@example.com
