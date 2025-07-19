@@ -1,4 +1,4 @@
-BuddyPlan/
+Event Horizon/
 ├── 1.docs/
 │   ├── 1.Requirements/
 │   │   └── RequirementDefinition.md

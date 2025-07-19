@@ -1,0 +1,150 @@
+// Database Type: PostgreSQL
+
+// === CORE TABLES ===
+
+Table users {
+  id integer [pk, increment]
+  username varchar(50) [unique, not null]
+  email varchar(255) [unique, not null]
+  hashed_password varchar(255) [not null]
+  display_name varchar(100)
+  profile_picture_url varchar(255)
+  is_ai boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table friendships {
+  user_one_id integer [ref: > users.id, not null]
+  user_two_id integer [ref: > users.id, not null]
+  status varchar(20) [not null, default: 'pending'] // 'pending', 'accepted', 'blocked'
+  action_user_id integer [ref: > users.id, not null]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  // CORRECTED SYNTAX FOR COMPOSITE PRIMARY KEY
+  indexes {
+    (user_one_id, user_two_id) [pk]
+  }
+}
+
+Table posts {
+  id integer [pk, increment]
+  author_id integer [ref: > users.id, not null]
+  content text [not null] // Stores rich text/HTML
+  is_private boolean [not null, default: false]
+  parent_post_id integer [ref: > posts.id] // Self-referencing FK for comments
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  // ADDING INDEXES FOR PERFORMANCE
+  indexes {
+    author_id // Creates a simple index on the author_id column
+    parent_post_id // Speeds up finding all comments for a post
+  }
+}
+
+// === EVENTS & SCHEDULING ===
+
+Table events {
+  id integer [pk, increment]
+  creator_id integer [ref: > users.id, not null]
+  title varchar(255) [not null]
+  description text
+  start_time timestamptz [not null]
+  end_time timestamptz [not null]
+  location varchar(255)
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table event_attendees {
+  event_id integer [ref: > events.id, not null]
+  user_id integer [ref: > users.id, not null]
+  // 'attending', 'maybe', 'declined', 'invited'
+  rsvp_status varchar(20) [not null, default: 'invited']
+
+  // CORRECTED SYNTAX FOR COMPOSITE PRIMARY KEY
+  indexes {
+    (event_id, user_id) [pk]
+  }
+}
+
+// === REAL-TIME CHAT ===
+
+Table chats {
+  id integer [pk, increment]
+  // 'direct', 'group'
+  chat_type varchar(20) [not null]
+  // For group chats
+  chat_name varchar(100)
+  // Can be used to store a group chat icon URL
+  chat_image_url varchar(255)
+  creator_id integer [ref: > users.id, not null]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table chat_participants {
+  chat_id integer [ref: > chats.id, not null]
+  user_id integer [ref: > users.id, not null]
+  // 'admin', 'member' - for future group chat permissions
+  role varchar(20) [not null, default: 'member']
+  joined_at timestamptz [not null, default: `now()`]
+
+  // CORRECTED SYNTAX FOR COMPOSITE PRIMARY KEY
+  indexes {
+    (chat_id, user_id) [pk]
+  }
+}
+
+Table messages {
+  id integer [pk, increment]
+  chat_id integer [ref: > chats.id, not null]
+  sender_id integer [ref: > users.id, not null]
+  content text [not null]
+  created_at timestamptz [not null, default: `now()`]
+  // For read receipts
+  read_by text[] // An array of user IDs who have read the message
+}
+
+// [ Keeping all the previous tables from above... ]
+// ... users, friendships, posts, events, event_attendees, chats, chat_participants, messages ...
+
+// === NOTIFICATIONS & SYNC ===
+
+Table push_subscriptions {
+  id integer [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  // This is the long, unique token from FCM/APNS/Web Push
+  subscription_token text [unique, not null]
+  // 'web', 'android', 'ios'
+  device_type varchar(20) [not null]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table notifications {
+  id integer [pk, increment]
+  recipient_id integer [ref: > users.id, not null]
+  // The user who caused the notification (e.g., who commented)
+  actor_id integer [ref: > users.id]
+  // 'new_comment', 'new_friend_request', 'event_reminder', 'new_message'
+  notification_type varchar(50) [not null]
+  // Has the user seen this notification in the app's notification list?
+  is_read boolean [not null, default: false]
+  // Link to the relevant content, e.g., post ID, event ID, chat ID
+  entity_id integer
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table external_calendar_sync {
+  id integer [pk, increment]
+  user_id integer [ref: > users.id, unique, not null]
+  // 'google', 'outlook' (for future proofing)
+  provider varchar(50) [not null]
+  // The encrypted OAuth refresh token needed to access their calendar
+  refresh_token text [not null]
+  // The ID of the calendar we are syncing with (e.g., 'primary')
+  calendar_id varchar(255) [not null]
+  // Token to check if the remote calendar has changed
+  sync_token text
+  last_synced_at timestamptz
+}

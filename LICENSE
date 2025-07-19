@@ -1,8 +1,8 @@
-# BuddyPlan
+# Event Horizon
 
 ## Overview
 
-BuddyPlan is a personal SNS and scheduling app that combines social networking features with a calendar scheduler supporting event sharing and Google Calendar sync. Designed for personal use and skill-building.
+Event Horizon is a personal SNS and scheduling app that combines social networking features with a calendar scheduler supporting event sharing and Google Calendar sync. Designed for personal use and skill-building.
 
 ---
 
@@ -54,8 +54,8 @@ BuddyPlan is a personal SNS and scheduling app that combines social networking f
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/buddyplan.git
-cd buddyplan
+git clone https://github.com/yourusername/event-horizon.git
+cd event-horizon
 docker-compose up --build
 ```
 
@@ -92,7 +92,7 @@ Open issues or pull requests are welcome.
 
 ## License
 
-MIT © 2025 BuddyPlan
+MIT © 2025 Event Horizon
 
 ---
 
