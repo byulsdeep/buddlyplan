@@ -3,7 +3,8 @@ from sqlalchemy import text  # <--- ADD THIS IMPORT
 from sqlalchemy.orm import Session
 from . import models # <--- IMPORT YOUR MODELS
 from .database import get_db, engine, Base # Import Depends, Session, and our new get_db
-from .routers import auth, users # <--- IMPORT THE NEW ROUTER
+from .routers import auth, users, posts # <--- IMPORT THE NEW ROUTER
+from fastapi.middleware.cors import CORSMiddleware
 
 # This line tells SQLAlchemy to look at all the classes that inherit from Base
 # (which we defined in database.py) and create the corresponding tables in the database.
@@ -12,8 +13,25 @@ models.Base.metadata.create_all(bind=engine)
 # Create the FastAPI app instance
 app = FastAPI(title="Event Horizon API")
 
+# === ADD THIS CORS MIDDLEWARE BLOCK ===
+# This list contains the origins that are allowed to make requests to our API.
+origins = [
+    "http://localhost:5173", # The origin for your React frontend
+    "http://localhost:3000", # Common for older create-react-app setups
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, # Allows specific origins
+    allow_credentials=True, # Allows cookies to be included in requests
+    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"], # Allows all headers
+)
+# =======================================
+
 app.include_router(auth.router, prefix="/api/v1") # <--- INCLUDE THE ROUTER
 app.include_router(users.router, prefix="/api/v1") # <--- INCLUDE THE NEW ROUTER
+app.include_router(posts.router, prefix="/api/v1") # <--- INCLUDE THE NEW ROUTER
 
 # Define a root endpoint for health checks
 @app.get("/")

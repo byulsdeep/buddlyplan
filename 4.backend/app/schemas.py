@@ -34,3 +34,25 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: int | None = None
+
+# --- Post Schemas ---
+
+# Base schema for a post, contains shared properties
+class PostBase(BaseModel):
+    content: str
+    is_private: bool = False # Default to public post
+
+# Schema for creating a post (inherits from PostBase)
+class PostCreate(PostBase):
+    pass
+
+# Schema for returning a post to the client
+class PostOut(PostBase):
+    id: int
+    author_id: int
+    created_at: datetime
+    updated_at: datetime | None = None # <-- ADD THIS
+    author: UserOut # <-- This will nest the author's info in the response
+
+    class Config:
+        from_attributes = True

@@ -15,7 +15,7 @@ CREATE TABLE "friendships" (
   "status" varchar(20) NOT NULL DEFAULT 'pending',
   "action_user_id" integer NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "updated_at" timestamptz NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz,
   PRIMARY KEY ("user_one_id", "user_two_id")
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE "posts" (
   "is_private" boolean NOT NULL DEFAULT false,
   "parent_post_id" integer,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "updated_at" timestamptz NOT NULL DEFAULT (now())
+  "updated_at" timestamptz
 );
 
 CREATE TABLE "events" (
@@ -38,7 +38,7 @@ CREATE TABLE "events" (
   "end_time" timestamptz NOT NULL,
   "location" varchar(255),
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "updated_at" timestamptz NOT NULL DEFAULT (now())
+  "updated_at" timestamptz
 );
 
 CREATE TABLE "event_attendees" (

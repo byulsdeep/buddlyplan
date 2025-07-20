@@ -4,7 +4,8 @@ event-horizon/
 │   ├── 1.Requirements/
 │   │   └── RequirementDefinition.md
 │   ├── 2.BasicDesign/
-│   │   └── ERD.svg
+│   │   ├── ERD.svg
+│   │   └── ERD_20250721.svg
 │   ├── 3.DetailedDesign/
 │   │   ├── API_design.md
 │   │   ├── GeneratedSchema.sql
@@ -28,12 +29,55 @@ event-horizon/
 │   │   └── nginx.conf
 │   └── docker-compose.prod.yml
 ├── 3.frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── index.ts
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   └── ProtectedRoute.tsx
+│   │   │   ├── layout/
+│   │   │   └── posts/
+│   │   ├── hooks/
+│   │   │   └── useAuth.ts
+│   │   ├── pages/
+│   │   │   ├── FeedPage.tsx
+│   │   │   ├── LoginPage.tsx
+│   │   │   └── RegisterPage.tsx
+│   │   ├── store/
+│   │   │   └── authStore.ts
+│   │   ├── App.tsx
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .gitignore
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
 ├── 4.backend/
 │   ├── app/
+│   │   ├── routers/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth.py
+│   │   │   ├── posts.py
+│   │   │   └── users.py
+│   │   ├── utils/
+│   │   │   ├── __init__.py
+│   │   │   └── security.py
 │   │   ├── __init__.py
 │   │   ├── config.py
 │   │   ├── database.py
-│   │   └── main.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   └── schemas.py
 │   ├── .env
 │   └── requirements.txt
 ├── 5.tools/
