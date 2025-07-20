@@ -1,15 +1,19 @@
 from fastapi import FastAPI, Depends, HTTPException # <--- ADD HTTPException
 from sqlalchemy import text  # <--- ADD THIS IMPORT
 from sqlalchemy.orm import Session
+from . import models # <--- IMPORT YOUR MODELS
 from .database import get_db, engine, Base # Import Depends, Session, and our new get_db
+from .routers import auth, users # <--- IMPORT THE NEW ROUTER
 
-# This line is important. It tells SQLAlchemy to create all the tables defined
-# in your ORM models (we will create those models soon). For now, it won't do much.
-# Base.metadata.create_all(bind=engine) 
+# This line tells SQLAlchemy to look at all the classes that inherit from Base
+# (which we defined in database.py) and create the corresponding tables in the database.
+models.Base.metadata.create_all(bind=engine)
 
 # Create the FastAPI app instance
 app = FastAPI(title="Event Horizon API")
 
+app.include_router(auth.router, prefix="/api/v1") # <--- INCLUDE THE ROUTER
+app.include_router(users.router, prefix="/api/v1") # <--- INCLUDE THE NEW ROUTER
 
 # Define a root endpoint for health checks
 @app.get("/")
